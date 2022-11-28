@@ -1,0 +1,90 @@
+\subsection{Background}
+\begin{frame}
+    \frametitle{Why care about implementing registers?}
+    \begin{block}{What we get}
+        This implementation provides a reduction from Message Passing models to Atomic Memory models.
+    \end{block}
+    \begin{block}{What it can be used for}
+        Many distributed algorithms are based on atomic memory; this reduction provides instant implementations
+        of these algorithms in message passing systems.
+    \end{block}
+    \begin{examples}
+        \begin{itemize}
+            \item - Atomic, multi-writer multi-reader registers 
+            \item - Concurrent time-stamp systems
+            \item - Atomic snapshot scan
+        \end{itemize}
+    \end{examples}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Previous Atomic Register Algorithms}
+    %TODO: add ABD, others...
+\end{frame}
+
+\subsection{System Model}
+\begin{frame}
+    \frametitle{\emph{BAMP}: Byzantine Asynchronous Message Passing}
+    A distributed system of $n$ processes $p_1, p_2, ... p_n$.
+    \begin{block}{Byzantine}
+        A byzantine process is one that acts arbitrarily, it may crash or even
+        send 'malicious' messages to correct processes.\\
+        Let $t$ be the number of byzantine processes, we assume $t<\frac{n}{3}$.
+    \end{block}
+    \begin{block}{Asynchronous}
+        A message sent from $p_i$ to $p_j$ may take any amount of time to arrive.
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Signature Free}
+    Many algorithms cope with byzantine processes by requiring them to sign messages,
+    thus requiring assuming cryptographic primitives to be correct, it is not the case here.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Rliable Broadcast Abstraction}
+    Based on a seperate paper, we can use a reliable broadcast algorithm as a 'black box' (in \emph{BAMP} systems).
+    \begin{block}{Guarantees}
+        A reliable broadcast has the syntax '\emph{r\_brodcast(m)}', and guarantees
+        that message the $m$ arrives at all correct processes eventually.
+    \end{block}
+\end{frame}
+
+\subsection{Solution Requirments}
+\begin{frame}
+    \frametitle{Atomic Concistency}
+    \textbf{Atomic Concistency} is how we intuitively expect memory to be,
+    it is also known as Linearizability.
+    \begin{block}{A Simple Definition}
+        \emph{'for any execution of the system, there is some way of totally ordering
+        the reads and writes so that the values returned by the reads are the same
+        as if the operations had been performed in that order, with no overlapping.'}\\
+    \end{block}
+    - 'On Interprocess Communication' (1985), Leslie Lamport.
+\end{frame}
+\begin{frame}
+    \frametitle{Single Writer Multiple Reader Registers (\emph{SWMR})}
+    A single process can write; everyone can read.\\
+    \begin{block}{Single Writer \& Byzantine Processes}
+        If all shared memory can be written by all processes - a single Byzantine process can destroy it.
+    \end{block}
+    \begin{block}{Local Copies}
+    Each process $p_i$ has $Reg_i$, but can only write to \alert{$Reg_i[i]$}.
+        \begin{center}
+            \begin{tabular}{|c|c|c|}
+                \hline
+                $p_1$ & $p_2$ & $p_3$ \\
+                \hline
+                \alert{$Reg_1[1]$} & $Reg_2[1]$ & $Reg_3[1]$ \\  
+                $Reg_1[2]$ & \alert{$Reg_2[2]$} & $Reg_3[2]$ \\  
+                $Reg_1[3]$ & $Reg_2[3]$ & \alert{$Reg_3[3]$} \\
+                \hline
+            \end{tabular}\\
+        \end{center}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{ }
+\end{frame}

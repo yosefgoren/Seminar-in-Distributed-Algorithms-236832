@@ -1,0 +1,17 @@
+\frametitle{Message Handling}
+    \rule{\textwidth}{1pt}
+    \scriptsize
+    \begin{verbatim}
+        on reciving WRITE(v, wsn) from process j:
+            wait (wsn = reg[j].sn + 1)
+            reg[j] := (v, wsn)
+            send WRITE_DONE(wsn) to process k
+
+        on reciving READ(v, rsn) from process k:
+            send STATE(rsn, reg[j].sn) to process k
+
+        on reciving CATCH_UP(j, wsn) from process k:
+            wait (reg[j].sn >= wsn)
+            send CATCH_UP_DONE(j, wsn) to process k
+    \end{verbatim}
+    \rule{\textwidth}{1pt}

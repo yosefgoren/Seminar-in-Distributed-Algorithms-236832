@@ -1,0 +1,73 @@
+\begin{frame}
+    \frametitle{Lemma 1}
+    \begin{lemma}
+        If a correct process $p_i$ recives a message $m$ from a $r\_brodcast(m)$ by another correct process - 
+        any other correct process will recive $m$.\\
+    \end{lemma}
+
+    \begin{proof}
+        Immidiate from the guarantees of the broadcast algorithm.
+    \end{proof}
+
+\end{frame}
+\begin{frame}
+    \frametitle{Lemma 2}
+    \begin{lemma}
+        Any two sets of processes of size $(n-t)$ mast have
+        at least one correct process in common.
+    \end{lemma}
+\end{frame}
+\begin{frame}
+    \frametitle{Lemma 2 - Proof}
+    \begin{proof}
+        Denote the set of processes with $P$, and the set of faulty ones $F$.\\
+        Let $Q_1,Q_2\subseteq P$ s.t. $|Q_1|=|Q_2|=n-t$.\\
+        \[
+            |\overline{Q}_1\cup\overline{Q}_2|\leq |\overline{Q}_1|+|\overline{Q}_2|
+            \Rightarrow n-|\overline{Q}_1\cup\overline{Q}_2|\geq n-|\overline{Q}_1|-|\overline{Q}_2|
+        \]\[
+            \Rightarrow |\overline{\overline{Q}_1\cup\overline{Q}_2}|\geq n-t-t
+        \]\[
+            \Rightarrow |Q_1\cap Q_2|\geq n-2t>3t-2t=t=|F|
+        \]\[
+            \Rightarrow \exists p\in Q_1\cap Q_2\notin F
+        \]
+    \end{proof}
+\end{frame}
+
+\subsection{Termination Properties}
+\begin{frame}
+    \frametitle{Lemma 3}
+    \begin{lemma}
+        Let $p_i$ be a correct process. Any invocation of $Reg[i].write()$ terminates.
+    \end{lemma}
+    \begin{proof}
+        When $p_i$ invokes $Reg[i].write()$ it sends $WRITE$ to all others,
+        due to reliable brodcast - $n-t$ correct processes recive and handle this message
+        eventually, thus send back $WRITE\_DONE$.\\
+        At some point these arrive and $Reg[i].write()$ temrminates.
+    \end{proof}
+\end{frame}
+\begin{frame}
+    \frametitle{Lemma 4}
+    \begin{lemma}
+    \end{lemma}
+\end{frame}
+
+\subsection{Atomicity Properties}
+\begin{frame}
+    \frametitle{Lemma 5}
+\end{frame}
+\begin{frame}
+    \frametitle{Lemma 6}
+\end{frame}
+\begin{frame}
+    \frametitle{Lemma 7}
+\end{frame}
+\begin{frame}
+    \frametitle{Lemma 8}
+\end{frame}
+
+\subsection{Piecing it all together}
+\begin{frame}
+\end{frame}

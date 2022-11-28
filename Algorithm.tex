@@ -1,0 +1,71 @@
+\subsection{Non-Atomic Algorithm}
+\begin{frame}
+\end{frame}
+
+\subsection{Algorithm for failure-free systems}
+\begin{frame}
+    \begin{block}{Local variables}
+        Each process has local variables $reg, rsn$ - arrays of $n$, and 
+        an additional counter $wsn$.
+    \end{block}
+    \begin{alertblock}{Initialization}
+        \begin{itemize}
+            \item $reg \leftarrow [(init_0, 0), ..., (init_n, 0)]$.
+            \item $rsn \leftarrow [0, ..., 0]$.
+            \item$wsn \leftarrow 0$.
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\subsection{BAMS Algorithm (from the paper)}
+\begin{frame}[fragile]
+    \frametitle{Write}
+    \rule{\textwidth}{1pt}
+    \scriptsize
+    \begin{verbatim}
+        Reg[i].write(v):
+            wsn := wsn + 1
+            r_brodcast WRITE(v, wsn)
+            wait WRITE_DONE(wsn) recived from (n-t) processes
+            return
+    \end{verbatim}
+    \rule{\textwidth}{1pt}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Read}
+    \rule{\textwidth}{1pt}
+    \scriptsize
+    \begin{verbatim}
+        Reg[j].read():
+            rsn[j] := rsn[j] + 1
+            r_brodcast READ(v, rsn[j])
+            wait untill reg[j].sn is greater than the arguments of
+                n-t messages STATE(rsn[j], _) from different processes.
+            let (w, wsn) := reg[j]
+            r_brodcast CATCH_UP(w, wsn)
+            wait CATCH_UP_DONE(j, wsn) recived from (n-t) different processes.
+            return w.
+    \end{verbatim}
+    \rule{\textwidth}{1pt}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Message Handling}
+    \rule{\textwidth}{1pt}
+    \scriptsize
+    \begin{verbatim}
+        on reciving WRITE(v, wsn) from process j:
+            wait (wsn = reg[j].sn + 1)
+            reg[j] := (v, wsn)
+            send WRITE_DONE(wsn) to process k
+        
+        on reciving READ(v, rsn) from process k:
+            send STATE(rsn, reg[j].sn) to process k  
+        
+        on reciving CATCH_UP(j, wsn) from process k:
+            wait (reg[j].sn >= wsn)
+            send CATCH_UP_DONE(j, wsn) to process k
+    \end{verbatim}
+    \rule{\textwidth}{1pt}
+\end{frame}
