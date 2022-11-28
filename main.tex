@@ -41,23 +41,72 @@
     showtabs=false,                  
     tabsize=2
 }
-
+\usetheme{Copenhagen}
 \lstset{style=mystyle}
 
+
 \begin{document}
-\author{Yosef Goren}
 \title{Atomic Memory in BAMP systems}
-\frame{\titlepage}
+\author{Yosef Goren}
+\date{}
+\frame{\titlepage
+On \textbf{'Atomic Read/Write Memory in Signature-Free Byzantine Asynchronous Message-Passing Systems'}\\
+A paper by:\\
+Achour Mostefaoui, Matoula Petrolia, Michel Raynal, Claude Jard}
 
 \begin{frame}
-    \frametitle{BAMP: Byzantine Asynchronous Message Passing}
+    \frametitle{\emph{BAMP}: Byzantine Asynchronous Message Passing}
     \begin{itemize}
-        \item A distributed system model
-        \item A set of processes, each with a local memory
-        \item Processes communicate by sending messages
-        \item Messages are delivered asynchronously
-        \item Up to $t<\frac{n}{3}$ Processes may be Byzantine
+        \item There are up to $t<\frac{n}{3}$ \textbf{Byzantine Processes}.
+        \item Messages are delivered \textbf{Asynchronously}.
+        \item Processes communicate by \textbf{Message Passing} (Clique).
+        \item '\emph{Signature Free}' - No cryptographic primitives required.
     \end{itemize}
 \end{frame}
 
+
+\begin{frame}
+    \frametitle{Who cares?}
+    \begin{block}{What we get}
+        This implementation provides a reduction from Message Passing models to Atomic Memory models.
+    \end{block}
+    \begin{block}{What it can be used for}
+        Many distributed algorithms are based on atomic memory; this reduction provides instant implementations
+        of these algorithms in message passing systems.
+    \end{block}
+    \begin{examples}
+        \begin{itemize}
+            \item - Atomic, multi-writer multi-reader registers 
+            \item - Concurrent time-stamp systems
+            \item - Variants of 4Lexclusion
+            \item - Atomic snapshot scan
+        \end{itemize}
+    \end{examples}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Atomic Memory (Registers)}
+    ... The type of memory we expect.\\
+    \textbf{Atomic Concistency} is also known as Linearizability.
+    \begin{block}{A Simple Definition}
+        \emph{'for any execution of the system, there is some way of totally ordering
+        the reads and writes so that the values returned by the reads are the same
+        as if the operations had been performed in that order, with no overlapping.'}\\
+    \end{block}
+    - 'On Interprocess Communication' (1985), Leslie Lamport.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Single Writer Multiple Reader Registers (\emph{SWMR})}
+    A single process can write; everyone can read.\\
+    \begin{block}{Single Writer \& Byzantine Processes}
+        If all shared memory can be written by all processes - a single Byzantine process can destroy it.
+    \end{block}
+    \begin{block}{Memory Matrix}
+        $\begin{bmatrix}
+            1 & 2 & 3\\
+            a & b & c
+        \end{bmatrix}$
+    \end{block}
+\end{frame}
 \end{document}
