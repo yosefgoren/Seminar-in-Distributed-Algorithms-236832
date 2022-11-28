@@ -50,10 +50,17 @@
 \author{Yosef Goren}
 \date{}
 \frame{\titlepage
-On \textbf{'Atomic Read/Write Memory in Signature-Free Byzantine Asynchronous Message-Passing Systems'}\\
+On \textbf{'Atomic Read/Write Memory in Signature-Free Byzantine Asynchronous Message-Passing Systems'}.\\
 A paper by:\\
 Achour Mostefaoui, Matoula Petrolia, Michel Raynal, Claude Jard}
 
+\begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents
+\end{frame}
+
+\section{Introduction}
+\subsection{System Model}
 \begin{frame}
     \frametitle{\emph{BAMP}: Byzantine Asynchronous Message Passing}
     \begin{itemize}
@@ -64,30 +71,11 @@ Achour Mostefaoui, Matoula Petrolia, Michel Raynal, Claude Jard}
     \end{itemize}
 \end{frame}
 
-
+\subsection{Solution Requirments}
 \begin{frame}
-    \frametitle{Who cares?}
-    \begin{block}{What we get}
-        This implementation provides a reduction from Message Passing models to Atomic Memory models.
-    \end{block}
-    \begin{block}{What it can be used for}
-        Many distributed algorithms are based on atomic memory; this reduction provides instant implementations
-        of these algorithms in message passing systems.
-    \end{block}
-    \begin{examples}
-        \begin{itemize}
-            \item - Atomic, multi-writer multi-reader registers 
-            \item - Concurrent time-stamp systems
-            \item - Variants of 4Lexclusion
-            \item - Atomic snapshot scan
-        \end{itemize}
-    \end{examples}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Atomic Memory (Registers)}
-    ... The type of memory we expect.\\
-    \textbf{Atomic Concistency} is also known as Linearizability.
+    \frametitle{Atomic Concistency}
+    \textbf{Atomic Concistency} is how we intuitively expect memory to be,
+    it is also known as Linearizability.
     \begin{block}{A Simple Definition}
         \emph{'for any execution of the system, there is some way of totally ordering
         the reads and writes so that the values returned by the reads are the same
@@ -102,11 +90,49 @@ Achour Mostefaoui, Matoula Petrolia, Michel Raynal, Claude Jard}
     \begin{block}{Single Writer \& Byzantine Processes}
         If all shared memory can be written by all processes - a single Byzantine process can destroy it.
     \end{block}
-    \begin{block}{Memory Matrix}
-        $\begin{bmatrix}
-            1 & 2 & 3\\
-            a & b & c
-        \end{bmatrix}$
+    \begin{block}{Local Copies}
+    Each process $p_i$ has $Reg_i$, but can only write to \alert{$Reg_i[i]$}.
+        \begin{tabular}{c c c}
+            $p_1$ & $p_2$ & $p_3$ \\
+            \alert{$Reg_1[1]$} & $Reg_2[1]$ & $Reg_3[1]$ \\  
+            $Reg_1[2]$ & \alert{$Reg_2[2]$} & $Reg_3[2]$ \\  
+            $Reg_1[3]$ & $Reg_2[3]$ & \alert{$Reg_3[3]$}
+        \end{tabular}\\
     \end{block}
 \end{frame}
+
+\subsection{Background}
+\begin{frame}
+    \frametitle{But who cares?}
+    \begin{block}{What we get}
+        This implementation provides a reduction from Message Passing models to Atomic Memory models.
+    \end{block}
+    \begin{block}{What it can be used for}
+        Many distributed algorithms are based on atomic memory; this reduction provides instant implementations
+        of these algorithms in message passing systems.
+    \end{block}
+    \begin{examples}
+        \begin{itemize}
+            \item - Atomic, multi-writer multi-reader registers 
+            \item - Concurrent time-stamp systems
+            \item - Atomic snapshot scan
+        \end{itemize}
+    \end{examples}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Previous Atomic Register Algorithms}
+    %TODO: add ABD, others...
+\end{frame}
+
+\section{The Algorithm}
+\subsection{(Very) Naive Algorithm}
+
+\begin{frame}
+\end{frame}
+
+\section{Analysis}
+\begin{frame}
+\end{frame}
+
 \end{document}
