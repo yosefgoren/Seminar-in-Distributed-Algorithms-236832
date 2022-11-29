@@ -2,7 +2,7 @@
 \begin{frame}
     \frametitle{Why care about implementing registers?}
     \begin{block}{What we get}
-        This implementation provides a reduction from Message Passing models to Atomic Memory models.
+        This implementation provides a reduction from Message Passing models to Atomic Concistency Memory models.
     \end{block}
     \begin{block}{What it can be used for}
         Many distributed algorithms are based on atomic memory; this reduction provides instant implementations
@@ -44,25 +44,15 @@
 
 \begin{frame}
     \frametitle{Rliable Broadcast Abstraction}
+    %TODO: cite the paper properly.
     Based on a seperate paper, we can use a reliable broadcast algorithm as a 'black box' (in \emph{BAMP} systems).
     \begin{block}{Guarantees}
-        A reliable broadcast has the syntax '\emph{r\_brodcast(m)}', and guarantees
-        that message the $m$ arrives at all correct processes eventually.
+        The reliable broadcast will have syntax '\emph{r\_brodcast m}', and guarantees
+        that the message $m$ arrives at all correct processes eventually.
     \end{block}
 \end{frame}
 
-\subsection{Solution Requirments}
-\begin{frame}
-    \frametitle{Atomic Concistency}
-    \textbf{Atomic Concistency} is how we intuitively expect memory to be,
-    it is also known as Linearizability.
-    \begin{block}{A Simple Definition}
-        \emph{'for any execution of the system, there is some way of totally ordering
-        the reads and writes so that the values returned by the reads are the same
-        as if the operations had been performed in that order, with no overlapping.'}\\
-    \end{block}
-    - 'On Interprocess Communication' (1985), Leslie Lamport.
-\end{frame}
+\subsection{Specifications}
 \begin{frame}
     \frametitle{Single Writer Multiple Reader Registers (\emph{SWMR})}
     A single process can write; everyone can read.\\
@@ -84,7 +74,55 @@
         \end{center}
     \end{block}
 \end{frame}
-
 \begin{frame}
-    \frametitle{ }
+    \frametitle{Atomic Concistency}
+    \textbf{Atomic Concistency} requires no concurrect actions to be interleaved,
+    it is also kown as \textbf{Linearizability}.
+    \begin{block}{(Almost) Formal Definition}
+        \emph{'for any execution of the system, there is some way of totally ordering
+        the reads and writes so that the values returned by the reads are the same
+        as if the operations had been performed in that order, with no overlapping.'}\\
+        - 'On Interprocess Communication', Lamport (1985).
+    \end{block}
+\end{frame}
+\begin{frame}
+    \frametitle{Notations}
+    We define these notations for any correct processes $p_i, p_j$:
+    \begin{block}{Reads}
+        $read[i,j,x]$ will refer to an invocation by $p_i$, to read $Reg_i[j]$
+        which returns the $x$'th value written by $p_j$.
+    \end{block}
+    \begin{block}{Writes}
+        $write[i,y]$ will refer to the $y$'th invocation by $p_i$, to write $Reg_i[i]$.
+    \end{block}
+
+\end{frame}
+\begin{frame}
+    \frametitle{Termination Requirment}
+    Let $p_i$ ne a correct process.
+    \begin{block}{Write Termination}
+        Each invocation of $Reg_i[i].write()$ terminates.
+    \end{block}
+    \begin{block}{Read Termination}
+        For any $j$, all invocations $Reg_i[j].read()$ terminate.
+    \end{block}
+\end{frame}
+\begin{frame}
+    \frametitle{Concistency Requirment}
+    Let $p_i, p_j$ be correct processes, and $p_k$ be (possibly) byzantine.
+    \begin{block}{Associated sequence}
+        We can associate a sequence $H_k[x]$ with $p_k$, s.t. if $p_k$ is correct,
+        $H_k[x]$ is the value written by $write[k,x]$.
+    \end{block}
+    \begin{block}{Read followed by Write}
+        if $read[j,i,x]$ terminates before $read[i,j,y]$ then $x\leq y$.
+    \end{block}
+    \begin{block}{Write followed by Read}
+        if $write[j,x]$ terminates before $read[i,j,y]$ then $x\leq y$.
+    \end{block}
+    \begin{block}{No Read inversion}
+        if $read[i,k,x]$ terminates before $read[j,k,y]$ starts then $x\leq y$.
+    \end{block}
+
+    
 \end{frame}

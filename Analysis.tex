@@ -60,14 +60,34 @@
 \end{frame}
 \begin{frame}
     \frametitle{Lemma 6}
+    \begin{lemma}
+        Let $p_i, p_j$ be two correct processes.\\
+        If $read[i,j,x]$ terminates before $write[j,y]$ starts, then $x<y$.
+    \end{lemma}
 \end{frame}
 \begin{frame}
     \frametitle{Lemma 7}
+    \begin{lemma}
+        Let $p_i, p_j$ be two correct processes.\\
+        If $write[i,x]$ terminates before $read[j,i,y]$ starts, then $x\leq y$.
+    \end{lemma}
 \end{frame}
 \begin{frame}
     \frametitle{Lemma 8}
+    \begin{lemma}
+        Let $p_i, p_j$ be two correct processes.\\
+        If $read[i,k,x]$ terminates before $read[j,k,y]$ starts, then $x\leq y$.
+    \end{lemma}
 \end{frame}
 
 \subsection{Piecing it all together}
 \begin{frame}
+    \begin{theorem}
+        The algorithm showcased implements and array of $n$ SWMR
+        registers with atomic concistency, in $BAMP$ with $t<\frac{n}{3}$ systems.
+    \end{theorem}
+    \begin{proof}
+        We have seen required termination properties in lemmas 3,4 and atomicity
+        properties in lemmas 5,6,7,8.\\
+    \end{proof}
 \end{frame}
