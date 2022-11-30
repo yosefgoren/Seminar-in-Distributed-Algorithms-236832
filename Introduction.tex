@@ -2,7 +2,7 @@
 \begin{frame}
     \frametitle{Why care about implementing registers?}
     \begin{block}{What we get}
-        This implementation provides a reduction from Message Passing models to Atomic Concistency Memory models.
+        This implementation provides a reduction from Message Passing models to Atomic Consistency Memory models.
     \end{block}
     \begin{block}{What it can be used for}
         Many distributed algorithms are based on atomic memory; this reduction provides instant implementations
@@ -43,12 +43,16 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Rliable Broadcast Abstraction}
-    %TODO: cite the paper properly.
-    Based on a seperate paper, we can use a reliable broadcast algorithm as a 'black box' (in \emph{BAMP} systems).
+    \frametitle{Reliable Broadcast Abstraction}
+    We will be using a reliable broadcast algorithm from:
+    'Asynchronous Byzantine agreement protocols' - Bracha ('87)
+    The algorithm has guarenteed properties in \emph{BAMP} systems.
     \begin{block}{Guarantees}
-        The reliable broadcast will have syntax '\emph{r\_brodcast m}', and guarantees
-        that the message $m$ arrives at all correct processes eventually.
+        The reliable broadcast will have syntax '\emph{r\_brodcast m}',
+        and it guarantees that if the sender
+        is correct, $m$ arrives at all correct processes eventually.\\
+        Moreover, if a message $m$ arrives at any correct process running the protocol -
+        it will eventually arrive at all correct processes.
     \end{block}
 \end{frame}
 
@@ -75,15 +79,40 @@
     \end{block}
 \end{frame}
 \begin{frame}
-    \frametitle{Atomic Concistency}
-    \textbf{Atomic Concistency} requires no concurrect actions to be interleaved,
+    \frametitle{Atomic Consistency}
+    \textbf{Atomic Consistency} requires no concurrect actions to be interleaved,
     it is also kown as \textbf{Linearizability}.
-    \begin{block}{(Almost) Formal Definition}
+    \begin{block}{Definition}
         \emph{'for any execution of the system, there is some way of totally ordering
         the reads and writes so that the values returned by the reads are the same
         as if the operations had been performed in that order, with no overlapping.'}\\
         - 'On Interprocess Communication', Lamport (1985).
     \end{block}
+\end{frame}
+\begin{frame}
+    \frametitle{Atomic Consistency}
+    \begin{block}{Execution}
+        An execution is a set of invocations to \emph{read} and \emph{write} operations,
+        each is represented by an interval $[s,e]$ on
+        the real number line where $s<e$.
+    \end{block}
+    \begin{alertblock}{Serialization}
+        Given an execution $[s_1, e_1], [s_2, e_2], ... [s_T, e_T]$,
+        a serialization is unique set $a_1,a_2,...a_T$ s.t. $a_i\in[s_i,e_i]$.
+    \end{alertblock}
+\end{frame}
+\begin{frame}
+    \frametitle{Atomic Consistency}
+    \begin{block}{Execution Linearizability}
+        An execution $[s_1, e_1], [s_2, e_2], ... [s_T, e_T]$
+        is linearizable if there exists a serialization $a_1,...,a_T$ for it,
+        which consistent with the order of the operations, i.e.
+        if $a_i$ is a read operation, and $j=\max\{k\mid k<i\wedge a_k\text{ is write }\}$ (last write),
+        then $a_i$ returns the value written by $a_j$.
+    \end{block}
+    \begin{alertblock}{Register Linearizability}
+        A register is linearizable if all possible executions on it linearizable.
+    \end{alertblock}
 \end{frame}
 \begin{frame}
     \frametitle{Notations}
@@ -98,27 +127,27 @@
 
 \end{frame}
 \begin{frame}
-    \frametitle{Termination Requirment}
+    \frametitle{Termination Requirments}
     Let $p_i$ ne a correct process.
     \begin{block}{Write Termination}
         Each invocation of $Reg_i[i].write()$ terminates.
     \end{block}
     \begin{block}{Read Termination}
-        For any $j$, all invocations $Reg_i[j].read()$ terminate.
+        For any $j$, all invocations $Reg_i[j].read()$ terminates.
     \end{block}
 \end{frame}
 \begin{frame}
-    \frametitle{Concistency Requirment}
+    \frametitle{Consistency Requirments}
     Let $p_i, p_j$ be correct processes, and $p_k$ be (possibly) byzantine.
-    \begin{block}{Associated sequence}
+    \begin{block}{Write History Sequence}
         We can associate a sequence $H_k[x]$ with $p_k$, s.t. if $p_k$ is correct,
         $H_k[x]$ is the value written by $write[k,x]$.
     \end{block}
     \begin{block}{Read followed by Write}
-        if $read[j,i,x]$ terminates before $read[i,j,y]$ then $x\leq y$.
+        if $read[j,i,x]$ terminates before $write[i,j,y]$ starts then $x<y$.
     \end{block}
     \begin{block}{Write followed by Read}
-        if $write[j,x]$ terminates before $read[i,j,y]$ then $x\leq y$.
+        if $write[j,x]$ terminates before $read[i,j,y]$ starts then $x\leq y$.
     \end{block}
     \begin{block}{No Read inversion}
         if $read[i,k,x]$ terminates before $read[j,k,y]$ starts then $x\leq y$.

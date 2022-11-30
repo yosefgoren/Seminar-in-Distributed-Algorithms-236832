@@ -59,21 +59,35 @@
     \frametitle{Lemma 5}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 6}
+    \frametitle{Lemma 6 (read before write)}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $read[i,j,x]$ terminates before $write[j,y]$ starts, then $x<y$.
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 7}
+    \frametitle{Lemma 6 (read before write) - Proof}
+        Let $read[i,j,x]$ terminate before $write[j,y]$ starts.\\
+        During the execution of $read[i,j,x]$ at line (8), the value of $read[i,j,x]$
+        is $x$ (by def.).\\
+        Additionally - during the write, $p_j$ sends $WRITE$ to
+        $p_i$, denote the value of $reg_i[j]$ at the time of it's arrival
+        with $r$. Now note how $y=r+1$ due to the condition at (12) (and thanks to termination property).\\
+        Also, $x$ and $r$ are both value of $reg_j[i]$ which only increases it's value.
+        Piecing it all together gives:
+        \[
+            x\leq r<r+1=y \Rightarrow x<y
+        \]
+\end{frame}
+\begin{frame}
+    \frametitle{Lemma 7 (write before read)}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $write[i,x]$ terminates before $read[j,i,y]$ starts, then $x\leq y$.
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 8}
+    \frametitle{Lemma 8 (no read inversion)}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $read[i,k,x]$ terminates before $read[j,k,y]$ starts, then $x\leq y$.
@@ -84,7 +98,7 @@
 \begin{frame}
     \begin{theorem}
         The algorithm showcased implements and array of $n$ SWMR
-        registers with atomic concistency, in $BAMP$ with $t<\frac{n}{3}$ systems.
+        registers with atomic Consistency, in $BAMP$ with $t<\frac{n}{3}$ systems.
     \end{theorem}
     \begin{proof}
         We have seen required termination properties in lemmas 3,4 and atomicity

@@ -1,0 +1,4 @@
+1. write proof for lemma 7
+2. write proof for lemma 8
+3. add ABD to revious atomic register algorithms slide
+5. add incorrect algorithm (and example for incorrectness?).

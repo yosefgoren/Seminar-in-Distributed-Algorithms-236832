@@ -2,7 +2,7 @@
 \begin{frame}
     \frametitle{What we have seen}
     \begin{block}{Taxonomy and building blocks}
-        \emph{Atomic Concistency, SWMR, Reliable Brodcast}
+        \emph{Atomic Consistency, SWMR, Reliable Brodcast}
     \end{block}
     \begin{block}{Shared Memory Algorithms}
         We have see some naive ideas for sharing memory, and a correct algorithm for \emph{BAMP} systems.
@@ -14,13 +14,13 @@
 
 \subsection{Further Work}
 \begin{frame}
-    \frametitle{Sequential Concistency too much?}
+    \frametitle{Sequential Consistency too much?}
     \begin{alertblock}{Runtime Limitations}
-        Requiring a system to implement Atomic Concistency is a very strong requirement
+        Requiring a system to implement Atomic Consistency is a very strong requirement
         and often comes at a steep runtime cost.
     \end{alertblock}
     \begin{block}{Alternative Models: $AC\subseteq SC\subseteq RC$}
-        Is an algorithm for (only) Sequential Concistency possible?\\
+        Is an algorithm for (only) Sequential Consistency possible?\\
         Or better yet - an algorithm for Release Consistency with some sort of
         \emph{'fence'} operation?
     \end{block}
