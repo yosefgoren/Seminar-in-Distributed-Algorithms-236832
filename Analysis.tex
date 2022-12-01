@@ -43,30 +43,65 @@
     \end{lemma}
     \begin{proof}
         When $p_i$ invokes $Reg[i].write()$ it sends $WRITE$ to all others,
-        due to reliable brodcast - $n-t$ correct processes recive and handle this message
+        due to reliable brodcast; $n-t$ correct processes recive and handle this message
         eventually, thus send back $WRITE\_DONE$.\\
-        At some point these arrive and $Reg[i].write()$ temrminates.
+        At some point these arrive and $Reg[i].write()$ temrminates.\\
+        More formally; using induction - all prior rounds have ended - meaning
+        $WRITE\_DONE$ has arrived for them, meaning the value at line (12)
+        is eventually $wsn-1$, so indeed $WRITE\_DONE$ arrives from all correct
+        processes.
     \end{proof}
 \end{frame}
 \begin{frame}
     \frametitle{Lemma 4}
     \begin{lemma}
+        Let $p_i$ be a correct process. Any invocation of $Reg_i[j].read()$ terminates.
     \end{lemma}
 \end{frame}
-
-\subsection{Atomicity Properties}
 \begin{frame}
-    \frametitle{Lemma 5}
+    \frametitle{Lemma 4 - Proof.}
+    Druring the read, $p_i$ brodcasts $READ(j,rsn)$ where $rsn$ is a sequence number 
+    unique to this read. Due to reliable brodcast, $n-t$ correct processes recive and handle
+    it eventually and sends a value $wsn_k$. Now cosider that $p_k$ (a correct process)
+    has sent $wsn_k=Reg_k[j].sn$, meaning at some point it must have recived a
+    reliable brodcast message $WRITE(\_,wsn_k)$, due to lemma 1 - this means $p_i$ will
+    eventually recive $WRITE(\_,wsn_k)$ too. At that point, $Reg_i[j].sn$ will also
+    be at-least $wsn_k$.\\
+    So eventually - there are $n-t$ correct processes sending $STATE(\_, wsn_k)$
+    and for each $Reg_i[j]\geq wsn_k$ eventually. This means line (7) will finish at some point.\\
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 6 (read before write)}
+    \frametitle{Lemma 4 - Proof. (cont.)}
+    The next possible stall to the \emph{read} invocation is at line (10) -
+    \emph{'wait $CATCH\_UP\_DONE(j,x)$' from $n-t$ different processes}.\\
+    At line (9) we brodcast $CATCH\_UP(j,x)$, so all correct processes
+    eventually recive it. Consider $p_k$ which has recived $CATCH\_UP(j,x)$;
+    for $p_i$ to have arrived when $Reg_i[j].sn=x$, all $WRITE$ messages 
+    of the first $x$ writes by $p_j$ must have arrived at $p_i$, due to reliable
+    brodcast - all these messages must arrive at $p_k$ too. When the last of them does - 
+    $Reg_k[j].sn$ is at-least $x$ causing the wait at line (16) to terminate thus
+    $p_k$ sends $CATCH\_UP\_DONE(j,x)$ to $p_i$.\\
+    When the last process $p_k$ sends $CATCH\_UP\_DONE$ - $p_i$ can terminate.
+\end{frame}
+
+\subsection{Atomicity Properties (Write History Sequence)}
+\begin{frame}
+    \frametitle{Lemma 5}
+    \begin{lemma}
+        It is possible to associate a single sequence of values $H_i$
+        with each register $Reg[i]$. Moreover, if $p_i$ is correct -
+        $H_i$ is the sequence of values written to $Reg[i]$ by $p_i$.
+    \end{lemma}
+\end{frame}
+\begin{frame}
+    \frametitle{Lemma 6 (Read before Write)}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $read[i,j,x]$ terminates before $write[j,y]$ starts, then $x<y$.
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 6 (read before write) - Proof}
+    \frametitle{Lemma 6 (Read before Write) - Proof}
         Let $read[i,j,x]$ terminate before $write[j,y]$ starts.\\
         During the execution of $read[i,j,x]$ at line (8), the value of $read[i,j,x]$
         is $x$ (by def.).\\
@@ -80,18 +115,59 @@
         \]
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 7 (write before read)}
+    \frametitle{Lemma 7 (write before Read)}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $write[i,x]$ terminates before $read[j,i,y]$ starts, then $x\leq y$.
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 8 (no read inversion)}
+    \frametitle{Lemma 7 (write before Read) - Proof.}
+    The fact that $write[i,x]$ terminates before $read[j,i,y]$ starts
+    implies that at least $n-t$ processes have responded to the
+    $WRITE(*,x)$ message sent by $p_i$ at line we (2) - before $read[j,i,y]$ has started. Denote
+    this set of processes with \alert{$Q_1$}.\\
+    During $read[j,i,y]$, at line (10) - $p_j$ will wait for a $CATCH\_UP\_DONE$ response from
+    $n-t$ processes for the message it sent at line (9).
+    Denote this set of processes with \alert{$Q_2$}.\\
+    Due to lemma 2, there must be at least one correct process s.t. \alert{
+        \[p_k\in Q_1\cap Q_2\]
+    }.
+\end{frame}
+\begin{frame}
+    \frametitle{Lemma 7 (write before Read) - Proof. cont.}
+    This means that $p_k$ is a \alert{correct process} which responded to
+    $WRITE(*,x)$ with $WRITE\_DONE(*,x)$ and \alert{later} responded to $CATCH\_UP(j,y)$ with
+    $CATCH\_UP\_DONE(j,y)$.\\
+    At time $t_{WD}$ of sending $WRITE\_DONE(*,x)$; $Reg_k[j].sn$ was associated
+    with $x$, and later at time $t_{CUD}$ when sending $CATCH\_U\_DONE(j,y)$; $Reg_k[j]$ was associated
+    with $y$.\\
+    Since $Reg_k[j]$ only increases in value:
+    \[
+        x=Reg_k[j]_{t_{WD}}\leq Reg_k[j]_{t_{CUD}}=y    
+    \]
+    \[\blacksquare \]
+\end{frame}
+
+\begin{frame}
+    \frametitle{Lemma 8 (No Read Inversion)}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $read[i,k,x]$ terminates before $read[j,k,y]$ starts, then $x\leq y$.
     \end{lemma}
+\end{frame}
+\begin{frame}
+    \frametitle{Lemma 8 (No Read Inversion) - Proof.}
+    Assume $read[i,k,x]$ terminates before $read[j,k,y]$
+    begins; similarly to lemma 7,
+    consider the set of processes which have responded to
+    $CATCH\_UP(k, x)$ from $p_i$ during $read[i,k,x]$; denote it with $Q_1$.\\
+    Consider the set of processes which have responded to
+    $CATCH\_UP(k,y)$ from $p_j$ during $read[j,k,y]$; denote it with $Q_2$.\\
+    Due to lemma 2, there is a correct process $p_k\in Q_1\cap Q_2$.\\
+    Once again both $x=Reg_k[j].sn$ and $y=Reg_k[j].sn$ at different times,
+    $x$'s time is prior to that of $y$,
+    meaning $x\leq y$.
 \end{frame}
 
 \subsection{Piecing it all together}
