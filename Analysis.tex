@@ -181,3 +181,18 @@
         properties in lemmas 5,6,7,8.\\
     \end{proof}
 \end{frame}
+
+\begin{frame}
+    \frametitle{Complexity}
+    
+    \begin{block}{Read Complexity}
+        \alert{$O(n)$} messages are required for each read - as can be seen
+        by the brodcasts at lines (6) and (9).
+    \end{block}
+    \begin{block}{Write Complexity}
+        \alert{$O(n^2)$} messages are required for each write,
+        since for a \alert{reliable} brodcast is required
+        by the write invocation - which could require up to $O(n^2)$
+        messages to be sent. 
+    \end{block}
+\end{frame}
