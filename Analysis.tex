@@ -1,5 +1,5 @@
 \begin{frame}
-    \frametitle{Lemma 1}
+    \frametitle{Lemma 1 - Brodcast Conformity}
     \begin{lemma}
         If a correct process $p_i$ recives a message $m$ from a $r\_brodcast(m)$ by another correct process - 
         any other correct process will recive $m$.\\
@@ -8,17 +8,16 @@
     \begin{proof}
         Immidiate from the guarantees of the broadcast algorithm.
     \end{proof}
-
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 2}
+    \frametitle{Lemma 2 - Non-Byzantine Intersection}
     \begin{lemma}
         Any two sets of processes of size $(n-t)$ mast have
         at least one correct process in common.
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 2 - Proof}
+    \frametitle{Lemma 2 - Non-Byzantine Intersection. Proof.}
     \begin{proof}
         Denote the set of processes with $P$, and the set of faulty ones $F$.\\
         Let $Q_1,Q_2\subseteq P$ s.t. $|Q_1|=|Q_2|=n-t$.\\
@@ -37,7 +36,7 @@
 
 \subsection{Termination Properties}
 \begin{frame}
-    \frametitle{Lemma 3}
+    \frametitle{Lemma 3 - Write Termination}
     \begin{lemma}
         Let $p_i$ be a correct process. Any invocation of $Reg[i].write()$ terminates.
     \end{lemma}
@@ -53,13 +52,17 @@
     \end{proof}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 4}
+    \frametitle{Lemma 4 - Read Termination}
     \begin{lemma}
         Let $p_i$ be a correct process. Any invocation of $Reg_i[j].read()$ terminates.
     \end{lemma}
 \end{frame}
-\begin{frame}
-    \frametitle{Lemma 4 - Proof.}
+\setbeamertemplate{itemize items}[circle]
+\begin{frame}{Lemma 4 - Read Termination. Proof.}
+    \begin{itemize}
+        \item hello
+    \end{itemize}
+
     Druring the read, $p_i$ brodcasts $READ(j,rsn)$ where $rsn$ is a sequence number 
     unique to this read. Due to reliable brodcast, $n-t$ correct processes recive and handle
     it eventually and sends a value $wsn_k$. Now cosider that $p_k$ (a correct process)
@@ -71,7 +74,7 @@
     and for each $Reg_i[j]\geq wsn_k$ eventually. This means line (7) will finish at some point.\\
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 4 - Proof. (cont.)}
+    \frametitle{Lemma 4 - Read Termination. Proof.}
     The next possible stall to the \emph{read} invocation is at line (10) -
     \emph{'wait $CATCH\_UP\_DONE(j,x)$' from $n-t$ different processes}.\\
     At line (9) we brodcast $CATCH\_UP(j,x)$, so all correct processes
@@ -86,7 +89,7 @@
 
 \subsection{Atomicity Properties (Write History Sequence)}
 \begin{frame}
-    \frametitle{Lemma 5}
+    \frametitle{Lemma 5 - Write Serialization}
     \begin{lemma}
         It is possible to associate a single sequence of values $H_i$
         with each register $Reg[i]$. Moreover, if $p_i$ is correct -
@@ -94,14 +97,14 @@
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 6 (Read before Write)}
+    \frametitle{Lemma 6 - Read before Write}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $read[i,j,x]$ terminates before $write[j,y]$ starts, then $x<y$.
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 6 (Read before Write) - Proof}
+    \frametitle{Lemma 6 - Read before Write. Proof.}
         Let $read[i,j,x]$ terminate before $write[j,y]$ starts.\\
         During the execution of $read[i,j,x]$ at line (8), the value of $read[i,j,x]$
         is $x$ (by def.).\\
@@ -115,14 +118,14 @@
         \]
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 7 (write before Read)}
+    \frametitle{Lemma 7 - Write before Read}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $write[i,x]$ terminates before $read[j,i,y]$ starts, then $x\leq y$.
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 7 (write before Read) - Proof.}
+    \frametitle{Lemma 7 - Write before Read. Proof.}
     The fact that $write[i,x]$ terminates before $read[j,i,y]$ starts
     implies that at least $n-t$ processes have responded to the
     $WRITE(*,x)$ message sent by $p_i$ at line we (2) - before $read[j,i,y]$ has started. Denote
@@ -135,7 +138,7 @@
     }.
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 7 (write before Read) - Proof. cont.}
+    \frametitle{Lemma 7 - Write before Read. Proof.}
     This means that $p_k$ is a \alert{correct process} which responded to
     $WRITE(*,x)$ with $WRITE\_DONE(*,x)$ and \alert{later} responded to $CATCH\_UP(j,y)$ with
     $CATCH\_UP\_DONE(j,y)$.\\
@@ -150,14 +153,14 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Lemma 8 (No Read Inversion)}
+    \frametitle{Lemma 8 - No Read Inversion}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $read[i,k,x]$ terminates before $read[j,k,y]$ starts, then $x\leq y$.
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 8 (No Read Inversion) - Proof.}
+    \frametitle{Lemma 8 - No Read Inversion. Proof.}
     Assume $read[i,k,x]$ terminates before $read[j,k,y]$
     begins; similarly to lemma 7,
     consider the set of processes which have responded to
