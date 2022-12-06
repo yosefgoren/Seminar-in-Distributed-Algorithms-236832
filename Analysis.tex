@@ -10,14 +10,17 @@
     \end{proof}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 2 - Non-Byzantine Intersection}
+    \frametitle{Lemma 2 - Correct Process Intersection}
     \begin{lemma}
-        Any two sets of processes of size $(n-t)$ mast have
+        Any two sets of processes of size $(n-t)$ must have
         at least one correct process in common.
     \end{lemma}
+    \begin{center}
+        \includegraphics[scale=.5]{lemma2_venn.png}
+    \end{center}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 2 - Non-Byzantine Intersection. Proof.}
+    \frametitle{Lemma 2 - Correct Process Intersection. Proof.}
     \begin{proof}
         Denote the set of processes with $P$, and the set of faulty ones $F$.\\
         Let $Q_1,Q_2\subseteq P$ s.t. $|Q_1|=|Q_2|=n-t$.\\
@@ -38,17 +41,17 @@
 \begin{frame}
     \frametitle{Lemma 3 - Write Termination}
     \begin{lemma}
-        Let $p_i$ be a correct process. Any invocation of $Reg[i].write()$ terminates.
+        Let $p_i$ be a correct process.
+        Any invocation of $Reg[i].write()$ terminates.
     \end{lemma}
     \begin{proof}
-        When $p_i$ invokes $Reg[i].write()$ it sends $WRITE$ to all others,
-        due to reliable brodcast; $n-t$ correct processes recive and handle this message
-        eventually, thus send back $WRITE\_DONE$.\\
-        At some point these arrive and $Reg[i].write()$ temrminates.\\
-        More formally; using induction - all prior rounds have ended - meaning
-        $WRITE\_DONE$ has arrived for them, meaning the value at line (12)
-        is eventually $wsn-1$, so indeed $WRITE\_DONE$ arrives from all correct
-        processes.
+        By induction; Assume $k$'th write invocation by $p_i$ recives $WRTIE\_DONE$ from all correct processes.
+        \begin{itemize}
+            \item When $p_i$ invokes write for $k+1$ time, it brodcasts $WRITE$.
+            \item All correct processes recive $WRITE$ (eventually).
+            \item In each of those, $reg[j].sn$ is $k$ due to induction assumption (line 12).
+            \item (line 12) satisfied and $WRITE\_DONE$ is sent back.
+        \end{itemize}
     \end{proof}
 \end{frame}
 \begin{frame}
@@ -59,10 +62,6 @@
 \end{frame}
 \setbeamertemplate{itemize items}[circle]
 \begin{frame}{Lemma 4 - Read Termination. Proof.}
-    \begin{itemize}
-        \item hello
-    \end{itemize}
-
     Druring the read, $p_i$ brodcasts $READ(j,rsn)$ where $rsn$ is a sequence number 
     unique to this read. Due to reliable brodcast, $n-t$ correct processes recive and handle
     it eventually and sends a value $wsn_k$. Now cosider that $p_k$ (a correct process)
