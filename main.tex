@@ -1,10 +1,21 @@
-\documentclass{beamer}
+\documentclass[10pt]{beamer}
 % basics
 \usepackage{amsfonts}
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{hyperref} 
 \usepackage[labelfont=bf]{caption}
+\usepackage{algorithm,algorithmic}
+\usepackage{caption}
+
+\newlength\myindent
+\setlength\myindent{2em}
+\newcommand\bindent{%
+  \begingroup
+  \setlength{\itemindent}{\myindent}
+  \addtolength{\algorithmicindent}{\myindent}
+}
+\newcommand\eindent{\endgroup}
 
 % unique math expressions:  
 \usepackage{amsmath}

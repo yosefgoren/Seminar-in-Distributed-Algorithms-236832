@@ -1,0 +1,21 @@
+\frametitle{Attempt 3 - Waiting Read. Cont.}
+    \begin{algorithm}[H]
+        \begin{algorithmic}[0]
+        \STATE \textbf{when a message} $WRITE(v, sn)$ \textbf{arrives} from $p_j$ \textbf{do}
+        \bindent
+            \STATE $Reg[j].value \leftarrow v$
+            \STATE $send$ $WRITE\_DONE(sn)$ $to$ $p_j$
+        \eindent
+        \STATE \textbf{when a message} $READ(j, rsn)$ \textbf{arrives} from $p_j$ \textbf{do}
+        \bindent
+            \STATE $send$ $STATE(Reg[j].sn, rsn)$ $to$ $p_j$
+        \eindent
+
+        \STATE \textbf{when a message} $CATCH\_UP(j, sn)$ \textbf{arrives} from $p_j$ \textbf{do}
+        \bindent
+            \STATE $\textbf{wait}$ $Reg[j].sn \geq sn$
+            \STATE $send$ $CATCH\_UP\_DONE(sn, rsn)$ $to$ $p_j$
+        \eindent
+    \end{algorithmic}
+        \caption*{}
+    \end{algorithm}
