@@ -1,2 +1,0 @@
-* add linearizability visualization link
-* add incorrect algorithm (and example for incorrectness?).

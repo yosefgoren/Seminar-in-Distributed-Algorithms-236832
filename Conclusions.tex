@@ -47,3 +47,17 @@
         \textbf{Thanks for listening!}
     \end{center}
 \end{frame}
+
+\subsection{Appendix}
+\begin{frame}
+    \frametitle{Appendix 1. Algorithm 3 - No Read Inversion}
+    \begin{itemize}
+        \item Assume $p_2$ starts reading after $p_1$ finishes reading.
+        \item Denote the maximal the index read by $p_1$ with $m$.
+        \item Some process $p_k$ must have replied to $p_1$ with $m$ as index.
+        \item The time of $p_k$ sending reply to $p_1$ is before $p_1$ finishes read, which is before $p_2$ starts read.
+        \item When $p_2$ asks $p_k$ to send it's index, $p_k$ will send $m'\geq m$ since serial numbers are ascending.
+        \item The index of value returned by $p_2$ is $m''=max(m', \cdot, ...)\geq m'\geq m$.
+        \item So the index of $p_2$'s values is at-least that of $p_1$'s value.
+    \end{itemize}
+\end{frame}
