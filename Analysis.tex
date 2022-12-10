@@ -1,16 +1,16 @@
-\begin{frame}
-    \frametitle{Lemma 1 - Brodcast Conformity}
-    \begin{lemma}
-        If a correct process $p_i$ recives a message $m$ from a $r\_brodcast(m)$ by another correct process - 
-        any other correct process will recive $m$.\\
-    \end{lemma}
+% \begin{frame}
+%     \frametitle{Lemma 1 - Brodcast Conformity}
+%     \begin{lemma}
+%         If a correct process $p_i$ recives a message $m$ from a $r\_brodcast(m)$ by another correct process - 
+%         any other correct process will recive $m$.\\
+%     \end{lemma}
 
-    \begin{proof}
-        Immidiate from the guarantees of the broadcast algorithm.
-    \end{proof}
-\end{frame}
+%     \begin{proof}
+%         Immidiate from the guarantees of the broadcast algorithm.
+%     \end{proof}
+% \end{frame}
 \begin{frame}
-    \frametitle{Lemma 2 - Correct Process Intersection}
+    \frametitle{Correct Process Intersection}
     \begin{lemma}
         Any two sets of processes of size $(n-t)$ must have
         at least one correct process in common.
@@ -20,7 +20,7 @@
     \end{center}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 2 - Correct Process Intersection. Proof.}
+    \frametitle{Correct Process Intersection. Proof.}
     \begin{proof}
         Denote the set of processes with $P$, and the set of faulty ones $F$.\\
         Let $Q_1,Q_2\subseteq P$ s.t. $|Q_1|=|Q_2|=n-t$.\\
@@ -39,30 +39,30 @@
 
 \subsection{Termination Properties}
 \begin{frame}
-    \frametitle{Lemma 3 - Write Termination}
+    \frametitle{Write Termination}
     \begin{lemma}
         Let $p_i$ be a correct process.
         Any invocation of $Reg[i].write()$ terminates.
     \end{lemma}
     \begin{proof}
-        By induction; Assume $k$'th write invocation by $p_i$ recives $WRTIE\_DONE$ from all correct processes.
+        By induction; Assume $k$'th write invocation by $p_i$ recives $WRTIE\_DONE$ from $n-t$ correct processes.
         \begin{itemize}
             \item When $p_i$ invokes write for $k+1$ time, it brodcasts $WRITE$.
-            \item All correct processes recive $WRITE$ (eventually).
+            \item $n-t$ correct processes recive $WRITE$ (eventually).
             \item In each of those, $reg[j].sn$ is $k$ due to induction assumption (line 12).
             \item (line 12) satisfied and $WRITE\_DONE$ is sent back.
         \end{itemize}
     \end{proof}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 4 - Read Termination}
+    \frametitle{Read Termination}
     \begin{lemma}
         Let $p_i$ be a correct process. Any invocation of $Reg_i[j].read()$ terminates.
     \end{lemma}
 \end{frame}
 \setbeamertemplate{itemize items}[circle]
-\begin{frame}{Lemma 4 - Read Termination. Proof.}
-    \begin{block}{(*) Conclusion from Lemma 3}
+\begin{frame}{Read Termination. Proof.}
+    \begin{block}{(*) Conclusion from Write Termination lemma}
         If one correct process get's to $Reg[j].sn=k$ ($p_j$ is also correct),
         then all correct processes eventually have $Reg[j].sn\geq k$.\\
         Otherwise - they could not send $WRITE\_DONE$ to
@@ -72,7 +72,7 @@
     \begin{block}{Line (7) termination}
         \begin{itemize}
             \item Denote $m$ as the max (min-max...) index recived at line (7).
-            \item This means some $p_k$ must have $Reg[j].sn=m$.
+            \item This means some correct process $p_k$ must have $Reg[j].sn=m$.
             \item Due to (*), $p_i$ eventually gets $Reg[j].sn=m$ too.
         \end{itemize}
     \end{block}
@@ -86,7 +86,7 @@
     % So eventually - there are $n-t$ correct processes sending $STATE(\_, wsn_k)$
     % and for each $Reg_i[j]\geq wsn_k$ eventually. This means line (7) will finish at some point.\\
 \end{frame}
-\begin{frame}{Lemma 4 - Read Termination. Proof.}
+\begin{frame}{Read Termination. Proof.}
     \begin{block}{Line (10) termination}
         \begin{itemize}
             \item $p_i$ sends $wsn:=Reg[j].sn$.
@@ -109,7 +109,7 @@
 
 \subsection{Atomicity Properties}
 \begin{frame}
-    \frametitle{Lemma 5 - Write Serialization}
+    \frametitle{Write Serialization}
     \begin{lemma}
         It is possible to associate a single sequence of values $H_i$
         with each register $Reg[i]$. Moreover, if $p_i$ is correct -
@@ -117,14 +117,14 @@
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 6 - Read before Write}
+    \frametitle{Read before Write}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $read[i,j,x]$ terminates before $write[j,y]$ starts, then $x<y$.
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 6 - Read before Write. Proof.}
+    \frametitle{Read before Write. Proof.}
         %write: wait for everyone to be at your serial number then finish writing.
 
         %read: wait for your serial number to be at least that of n-t others at the time
@@ -134,35 +134,23 @@
         \begin{itemize}
             \item Denote $Q_r$ the processes which terminated line (10).
             \item Denote $Q_w$ the processes which terminated line (3).
-            \item Due to lemma 2: $\exists p_k\in Q_1\cap Q_2$.
+            \item Thanks to correct process intersection lemma: $\exists p_k\in Q_1\cap Q_2$.
             \item Denote $p_k$'s serial number when $CATCH\_UP\_DONE$ was sent with $sn_k$. 
             \item Due to line (16), $sn_r\leq sn_k$.
             \item Denote $sn_k'$ the serial number at $p_k$'s when wait at (12) finshed.
             \item Due to line (12), $sn_w=sn_k'+1$.
             \item $sn_r\leq sn_k\leq sn_k'= sn_w-1\Rightarrow sn_r < sn_w$.
         \end{itemize}
-
-        % Let $read[i,j,x]$ terminate before $write[j,y]$ starts.\\
-        % During the execution of $read[i,j,x]$ at line (8), the value of $read[i,j,x]$
-        % is $x$ (by def.).\\
-        % Additionally - during the write, $p_j$ sends $WRITE$ to
-        % $p_i$, denote the value of $reg_i[j]$ at the time of it's arrival
-        % with $r$. Now note how $y=r+1$ due to the condition at (12) (and thanks to termination property).\\
-        % Also, $x$ and $r$ are both value of $reg_j[i]$ which only increases it's value.
-        % Piecing it all together gives:
-        % \[
-        %     x\leq r<r+1=y \Rightarrow x<y
-        % \]
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 7 - Write before Read}
+    \frametitle{Write before Read}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $write[i,x]$ terminates before $read[j,i,y]$ starts, then $x\leq y$.
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 7 - Write before Read. Proof.}
+    \frametitle{Write before Read. Proof.}
     Assume $write[w,sn_w]$ before $read[w,r,sn_r]$, meaning $p_w$ wrote 
     before $p_r$ read from $Reg[w]$.
     \begin{itemize}
@@ -175,43 +163,16 @@
         \item Due to line (7), $sn_r\geq sn_k'$.
         \item $sn_w=sn_k+1\leq sn_k'\leq sn_r\Rightarrow sn_w\leq sn_r$.
     \end{itemize}
-
-
-    % The fact that $write[i,x]$ terminates before $read[j,i,y]$ starts
-    % implies that at least $n-t$ processes have responded to the
-    % $WRITE(*,x)$ message sent by $p_i$ at line we (2) - before $read[j,i,y]$ has started. Denote
-    % this set of processes with \alert{$Q_1$}.\\
-    % During $read[j,i,y]$, at line (10) - $p_j$ will wait for a $CATCH\_UP\_DONE$ response from
-    % $n-t$ processes for the message it sent at line (9).
-    % Denote this set of processes with \alert{$Q_2$}.\\
-    % Due to lemma 2, there must be at least one correct process s.t. \alert{
-    %     \[p_k\in Q_1\cap Q_2\]
-    % }.
 \end{frame}
-% \begin{frame}
-%     \frametitle{Lemma 7 - Write before Read. Proof.}
-%     This means that $p_k$ is a \alert{correct process} which responded to
-%     $WRITE(*,x)$ with $WRITE\_DONE(*,x)$ and \alert{later} responded to $CATCH\_UP(j,y)$ with
-%     $CATCH\_UP\_DONE(j,y)$.\\
-%     At time $t_{WD}$ of sending $WRITE\_DONE(*,x)$; $Reg_k[j].sn$ was associated
-%     with $x$, and later at time $t_{CUD}$ when sending $CATCH\_U\_DONE(j,y)$; $Reg_k[j]$ was associated
-%     with $y$.\\
-%     Since $Reg_k[j]$ only increases in value:
-%     \[
-%         x=Reg_k[j]_{t_{WD}}\leq Reg_k[j]_{t_{CUD}}=y    
-%     \]
-%     \[\blacksquare \]
-% \end{frame}
-
 \begin{frame}
-    \frametitle{Lemma 8 - No Read Inversion}
+    \frametitle{No Read Inversion}
     \begin{lemma}
         Let $p_i, p_j$ be two correct processes.\\
         If $read[i,k,x]$ terminates before $read[j,k,y]$ starts, then $x\leq y$.
     \end{lemma}
 \end{frame}
 \begin{frame}
-    \frametitle{Lemma 8 - No Read Inversion. Proof.}
+    \frametitle{No Read Inversion. Proof.}
     Assume $read[r_1,j,sn_1]$ before $read[r_2,j,sn_2]$, meaning $p_1$ read
     before $p_2$ from $Reg[j]$.
     \begin{itemize}
@@ -224,17 +185,6 @@
         \item Due to line (7), $sn_k'\leq sn_2$.
         \item $sn_1\leq sn_k\leq sn_k'\leq sn_2$.
     \end{itemize}
-    
-    % Assume $read[i,k,x]$ terminates before $read[j,k,y]$
-    % begins; similarly to lemma 7,
-    % consider the set of processes which have responded to
-    % $CATCH\_UP(k, x)$ from $p_i$ during $read[i,k,x]$; denote it with $Q_1$.\\
-    % Consider the set of processes which have responded to
-    % $CATCH\_UP(k,y)$ from $p_j$ during $read[j,k,y]$; denote it with $Q_2$.\\
-    % Due to lemma 2, there is a correct process $p_k\in Q_1\cap Q_2$.\\
-    % Once again both $x=Reg_k[j].sn$ and $y=Reg_k[j].sn$ at different times,
-    % $x$'s time is prior to that of $y$,
-    % meaning $x\leq y$.
 \end{frame}
 
 \subsection{Piecing it all together}

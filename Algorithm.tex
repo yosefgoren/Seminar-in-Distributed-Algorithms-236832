@@ -42,7 +42,7 @@
             \bindent
                 \STATE $sn\leftarrow sn+1$
                 \STATE $Reg[i].value \leftarrow v$
-                \STATE $brodcast$ $WRITE(v)$
+                \STATE $brodcast$ $WRITE(v, sn)$
                 \STATE $\textbf{wait}$ $got$ $WRITE\_DONE(sn)$ $from$ $all$
             \eindent
 
@@ -53,6 +53,8 @@
             
             \STATE \textbf{when a message} $WRITE(v, sn)$ \textbf{arrives} from $p_j$ \textbf{do}
             \bindent
+                \STATE $wait$ $sn = Reg[j].sn+1$
+                \STATE $Reg[j].sn \leftarrow sn$
                 \STATE $Reg[j].value \leftarrow v$
                 \STATE $send$ $WRITE\_DONE(sn)$ $to$ $p_j$
             \eindent
@@ -66,7 +68,7 @@
 \begin{frame}
     \frametitle{Algorithm 2 - Not Linearizable due to Read Inversion}
     \begin{center}
-        \includegraphics[scale=.63]{resources/alg2_src.png}
+        \includegraphics[scale=.27]{resources/alg2_src.png}
         \includegraphics[scale=.5]{resources/alg2_incorrectness.png}
     \end{center}
 \end{frame}
@@ -86,12 +88,6 @@
         \end{algorithmic}
         \caption{Wait on both reads and writes -
             Linearizable but cannot handle faulty processes}
-    \end{algorithm}
-\end{frame}
-
-\begin{frame}[fragile]
-    \frametitle{Attempt 3 - Waiting Read. Cont.}
-    \begin{algorithm}[H]
         \begin{algorithmic}[0]
             \STATE \textbf{operation} $REG[j].read()$ \textbf{is}
             \bindent
@@ -99,15 +95,11 @@
                 \STATE $brodcast$ $READ(j, rsn[j])$
                 \STATE $\textbf{wait}$ $got$ $STATE(wsn_k[j], rsn[j])$ $from$ $each$ $p_k$
                 \STATE $sn := max\{rsn_k[j]\mid k\in[n]\}$
-                \STATE $\textbf{wait}$ $rsn[j] \geq sn$
+                \STATE $\textbf{wait}$ $Reg[j].sn \geq sn$
                 \STATE $when$ $done:$ $w, sn \leftarrow Reg[j]$
-                % \STATE $brodcast$ $CATCH\_UP(j, sn)$
-                % \STATE $\textbf{wait}$ $got$ $CATCH\_UP\_DONE(j, sn)$ $from$ $all$
                 \STATE $return$ $w$
-                % why not just return Reg[j].value when done?
             \eindent
         \end{algorithmic}
-        \caption*{}
     \end{algorithm}
 \end{frame}
 
@@ -117,6 +109,8 @@
         \begin{algorithmic}[0]
         \STATE \textbf{when a message} $WRITE(v, sn)$ \textbf{arrives} from $p_j$ \textbf{do}
         \bindent
+            \STATE $wait$ $sn = Reg[j].sn+1$
+            \STATE $Reg[j].sn \leftarrow sn$
             \STATE $Reg[j].value \leftarrow v$
             \STATE $send$ $WRITE\_DONE(sn)$ $to$ $p_j$
         \eindent
@@ -124,15 +118,23 @@
         \bindent
             \STATE $send$ $STATE(Reg[j].sn, rsn)$ $to$ $p_j$
         \eindent
-        
-        % \STATE \textbf{when a message} $CATCH\_UP(j, sn)$ \textbf{arrives} from $p_j$ \textbf{do}
-        % \bindent
-        %     \STATE $\textbf{wait}$ $Reg[j].sn \geq sn$
-        %     \STATE $send$ $CATCH\_UP\_DONE(sn, rsn)$ $to$ $p_j$
-        % \eindent
     \end{algorithmic}
         \caption*{}
     \end{algorithm}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Algorithm 3 - No Read Inversion}
+    \begin{center}
+        \begin{figure}
+            \includegraphics[scale=.35]{resources/alg2_incorrectness.png}
+            \caption*{No Read Wait (alg. 2).}
+        \end{figure}
+        \begin{figure}
+            \includegraphics[scale=.35]{resources/alg3_no_read_inversion.png}
+            \caption*{With Read Wait (alg. 3).}
+        \end{figure}
+    \end{center}
 \end{frame}
 
 \begin{frame}
@@ -171,20 +173,5 @@
     \frametitle{Message Handling}
     \begin{center}
         \includegraphics[scale=.7]{resources/alg4_src2.png}
-    \end{center}
-\end{frame}
-
-
-\begin{frame}
-    \frametitle{Algorithm 4 - No Read Inversion}
-    \begin{center}
-        \begin{figure}
-            \includegraphics[scale=.35]{resources/alg2_incorrectness.png}
-            \caption*{No Read Wait (alg. 2).}
-        \end{figure}
-        \begin{figure}
-            \includegraphics[scale=.35]{resources/alg3_no_read_inversion.png}
-            \caption*{With Read Wait (alg. 3).}
-        \end{figure}
     \end{center}
 \end{frame}

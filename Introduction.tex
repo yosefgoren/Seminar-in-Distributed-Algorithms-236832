@@ -98,11 +98,7 @@
 \end{frame}
 \begin{frame}{Consistency Models}
     \begin{itemize}
-        \item A set of formal requirments.
-        \pause
-        \item Dictates what should be possible during concurrent executions.
-        \pause
-        \item Used to define correctness of concurrent system implementations.
+        \item A set of formal requirments of concurrent systems.
         \pause
         \item A system is a set of \alert{operations} with \alert{semantics}.
     \end{itemize}
@@ -220,17 +216,6 @@
         \end{center}
         \pause
         \item Instead we prove equivalent semantics - Read invocations should consistent with order of writes:
-        % \begin{center}
-        %     \includegraphics[scale=.4]{resources/alternative_semantics.png}
-        % \end{center}
-        \begin{itemize}
-            \pause
-            \item Assign an index to each write.
-            \pause
-            \item The index of a read is the index of the write of the returned value.
-            \pause
-            \item If an invocation happends after invocation event - the prior should have a smaller index!
-        \end{itemize}
     \end{itemize}
     
 \end{frame}
@@ -244,7 +229,7 @@
     \end{block}
     \pause
     \begin{block}{Read followed by Write}
-        if $read[j,i,x]$ terminates before $write[i,j,y]$ starts then $x<y$.
+        if $read[j,i,x]$ terminates before $write[i,y]$ starts then $x<y$.
     \end{block}
     \pause
     \begin{block}{Write followed by Read}
