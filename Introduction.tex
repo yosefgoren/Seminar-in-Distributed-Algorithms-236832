@@ -11,6 +11,10 @@
     \begin{block}{Asynchronous}
         A message sent from $p_i$ to $p_j$ may take any amount of time to arrive.
     \end{block}
+    \pause
+    \begin{block}{Signature Free}
+        No digital signatures used, no cryptographic assumptions required.
+    \end{block}
 \end{frame}
 \begin{frame}
     \frametitle{Why care about implementing registers?}
@@ -21,13 +25,6 @@
         Many distributed algorithms are based on atomic memory; this reduction provides instant implementations
         of these algorithms in message passing systems.
     \end{block}
-    % \begin{examples}
-    %     \begin{itemize}
-    %         \item - Atomic, multi-writer multi-reader registers 
-    %         \item - Concurrent time-stamp systems
-    %         \item - Atomic snapshot scan
-    %     \end{itemize}
-    % \end{examples}
 \end{frame}
 
 \begin{frame}
@@ -46,28 +43,6 @@
         also implements atomic $SWMR$ registers in $BAMP$ systems, 
         \alert{but requires each member to store the entier history of
         each register}, an is (arguably) more complex.
-    \end{block}
-\end{frame}
-
-\subsection{System Model}
-\begin{frame}
-    \frametitle{Signature Free}
-    Many algorithms cope with byzantine processes by requiring them to sign messages,
-    The correctness of the algorithm presented \alert{depends on no cryptographic primitives}.
-\end{frame}
-
-\begin{frame}
-    \frametitle{Reliable Broadcast Abstraction}
-    We will be using a reliable broadcast algorithm from:
-    'Asynchronous Byzantine agreement protocols' - Bracha ('87)
-    The algorithm has guarenteed properties in \emph{BAMP} systems.
-    \pause
-    \begin{block}{Guarantees}
-        The reliable broadcast will have syntax '\emph{r\_brodcast m}',
-        and it guarantees that if the sender
-        is correct, \alert{$m$ arrives at all correct processes} eventually.\\
-        Moreover, if a message $m$ arrives at any correct process running the protocol -
-        it will eventually arrive at all correct processes.
     \end{block}
 \end{frame}
 
@@ -181,20 +156,18 @@
 %     \end{block}
 % \end{frame}
 \begin{frame}
-    \frametitle{Notations}
-    We define these notations for any correct processes $p_i, p_j$:
-    \begin{block}{Reads}
+    \frametitle{Notations: $read[i,j,x], write[i,x]$}
+    For any correct $p_i, p_j$:
+    \begin{block}{Read Notation}
         $read[\alert{i,j,x}]$ will refer to an invocation by $p_i$, to read $Reg[\alert{j}]$
         which returns the \alert{$x$}'th value written by \alert{$p_j$}.
     \end{block}
-    \begin{block}{Writes}
-        $write[\alert{i,y}]$ will refer to the \alert{$y$}'th invocation by \alert{$p_i$}, to write $Reg[\alert{i}]$.
-    \end{block}
     \pause
-    Note: $read[i,j,x]$ does \textbf{NOT} mean the value $x$ was read,
-    it means that the $x$'th value written to the register was read.\\
-    Similarly with $write[i,y]$
-
+    $read[i,j,x]$ does \textbf{NOT} return $x$, it returns the $x$'th value written.
+    \pause
+    \begin{block}{Write Notation}
+        $write[\alert{i,x}]$ will refer to the \alert{$x$}'th invocation by \alert{$p_i$}, to write $Reg[\alert{i}]$.
+    \end{block}
 \end{frame}
 \begin{frame}
     \frametitle{Algorithm Correctness Requirments - Termination}
@@ -206,21 +179,21 @@
         For any $j$, all invocations $Reg_i[j].read()$ terminates.
     \end{block}
 \end{frame}
-\begin{frame}{Alternative Semantics}
+\begin{frame}{Correctness Requirments - Alternative Semantics}
     \begin{itemize}
-        \item We want to require our algorithm to have atomic consistency.
-        \pause
-        \item That requires showing every read returns value of last write.
+        \item Old Semantics-Show read returns last write.
         \begin{center}
             \includegraphics[scale=.4]{resources/vanilla_semantics.png}
         \end{center}
         \pause
-        \item Instead we prove equivalent semantics - Read invocations should consistent with order of writes:
+        \item Instead, show alternative \& equivalent semantics:
+        \item Give each value written a serial number.
+        \item Require reads return resonable serial number.
     \end{itemize}
     
 \end{frame}
 
-\begin{frame}{Algorithm Correctness Requirments - Atomic Consistency}
+\begin{frame}{Alternative Semantics}
     For any correct $p_i, p_j, p_k$ where $p_i$ and $p_j$ are correct, require:
     \begin{block}{Write History Sequence}
         We can associate a single sequence $H_k[x]$ with $p_k$ with

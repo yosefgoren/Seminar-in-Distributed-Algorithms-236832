@@ -158,9 +158,24 @@
     \frametitle{Algorithm 4 - BAMP}
     \begin{block}{Main Idea}
         Use the messages from \textbf{alg. 3} to provide linearizability,
-        and use \textbf{majority} and \textbf{reliable brodcast}
+        and use \textbf{majority} and \textbf{Reliable brodcast}
         to handle faulty (including byzantine) processes.
     \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Reliable Broadcast}
+    Brodcast - with guarantees:
+    \begin{block}{Arrival}
+        If a correct process brodcasts, it arrives at all correct processes.
+    \end{block}
+    \begin{block}{Conformity}
+        If a message arrives at a correct process, it arrives
+        at all correct process.
+    \end{block}
+    \pause
+    Used as a \textbf{black box}, based on:\\
+    'Asynchronous Byzantine agreement protocols' - Bracha ('87)
 \end{frame}
 
 \begin{frame}
